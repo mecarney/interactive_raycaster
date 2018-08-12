@@ -41,9 +41,8 @@ void		ft_mlx_init(t_mlx *mlx)
 	mlx->p.posy = b;
 }
 
-void		fill_array(char *filename, t_map *map, int y)
+void		fill_array(char *filename, t_map *map, int y, int x)
 {
-	int		x;
 	int		fd;
 	char	**line_split;
 	char	*line;
@@ -63,7 +62,9 @@ void		fill_array(char *filename, t_map *map, int y)
 		while (++x < map->map_w)
 			map->grid[y][x] = (x != 0 && y != 0 && y != map->map_h - 1 &&
 			x != map->map_w - 1) ? ft_atoi(line_split[x]) : 1;
-		ft_free_array((void**)line_split, map->map_w);
+		while (line_split[x])
+			x++;
+		ft_free_array((void**)line_split, x);
 		free(line);
 	}
 	close(fd);
@@ -95,5 +96,5 @@ void		count_and_error_check(char *filename, t_map *map)
 	(map->map_h > map->map_w) ? map->map_h = map->map_w : 0;
 	if (!(map->grid = (int **)malloc(sizeof(int *) * map->map_h)))
 		ft_return_error("malloc error");
-	fill_array(filename, map, -1);
+	fill_array(filename, map, -1, 0);
 }
